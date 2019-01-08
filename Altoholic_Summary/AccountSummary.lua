@@ -27,6 +27,7 @@ local CURRENCY_ID_BFA_SOWF = 1580				-- BfA: Seals of the Wartorn Fate
 local CURRENCY_ID_BFA_DUBLOONS = 1710			-- BfA: Seafarer's Dubloon
 local CURRENCY_ID_BFA_WAR_SUPPLIES = 1587		-- BfA: War Supplies
 local CURRENCY_ID_BFA_AZERITE = 1565			-- BfA: Rich Azerite Fragment
+local CURRENCY_ID_BFA_HONORBOUND = 1716			-- BfA: Honorbound Service Medal
 local CURRENCY_ID_BFA_7TH_LEGION = 1717			-- BfA: 7th Legion Service Medal
 local CURRENCY_ID_BFA_TITAN_RESIDUUM = 1718		-- BfA: Titan Residuum
 
@@ -231,6 +232,16 @@ local function CurrencyHeader_OnEnter(frame, currencyID)
 	tt:SetOwner(frame, "ANCHOR_BOTTOM")
 	-- tt:AddLine(select(1, GetCurrencyInfo(currencyID)), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
 	tt:SetHyperlink(GetCurrencyLink(currencyID,0))
+	tt:Show()
+end
+
+local function CurrencyHeaderMulti_OnEnter(frame, currencyOneID, currencyTwoID)
+	local tt = AltoTooltip
+	
+	tt:ClearLines()
+	tt:SetOwner(frame, "ANCHOR_BOTTOM")
+	tt:SetHyperlink(GetCurrencyLink(currencyOneID,0))
+	tt:SetHyperlink(GetCurrencyLink(currencyTwoID,0))
 	tt:Show()
 end
 
@@ -1684,7 +1695,7 @@ columns["CurrencyBfAWarResources"] = {
 	headerOnEnter = function(frame, tooltip)
 			CurrencyHeader_OnEnter(frame, CURRENCY_ID_BFA_WAR_RES)
 		end,
-	headerOnClick = function() SortView("CurrencySOBF") end,
+	headerOnClick = function() SortView("CurrencyBfAWarResources") end,
 	headerSort = DataStore.GetBfAWarResources,
 	
 	-- Content
@@ -1705,7 +1716,7 @@ columns["CurrencyBfASOWF"] = {
 	headerOnEnter = function(frame, tooltip)
 			CurrencyHeader_OnEnter(frame, CURRENCY_ID_BFA_SOWF)
 		end,
-	headerOnClick = function() SortView("CurrencySOBF") end,
+	headerOnClick = function() SortView("CurrencyBfASOWF") end,
 	headerSort = DataStore.GetBfASealsOfWartornFate,
 	
 	-- Content
@@ -1726,7 +1737,7 @@ columns["CurrencyBfADubloons"] = {
 	headerOnEnter = function(frame, tooltip)
 			CurrencyHeader_OnEnter(frame, CURRENCY_ID_BFA_DUBLOONS)
 		end,
-	headerOnClick = function() SortView("CurrencySOBF") end,
+	headerOnClick = function() SortView("CurrencyBfADubloons") end,
 	headerSort = DataStore.GetBfADubloons,
 	
 	-- Content
@@ -1747,7 +1758,7 @@ columns["CurrencyBfAWarSupplies"] = {
 	headerOnEnter = function(frame, tooltip)
 			CurrencyHeader_OnEnter(frame, CURRENCY_ID_BFA_WAR_SUPPLIES)
 		end,
-	headerOnClick = function() SortView("CurrencySOBF") end,
+	headerOnClick = function() SortView("CurrencyBfAWarSupplies") end,
 	headerSort = DataStore.GetBfAWarSupplies,
 	
 	-- Content
@@ -1768,7 +1779,7 @@ columns["CurrencyBfARichAzerite"] = {
 	headerOnEnter = function(frame, tooltip)
 			CurrencyHeader_OnEnter(frame, CURRENCY_ID_BFA_AZERITE)
 		end,
-	headerOnClick = function() SortView("CurrencySOBF") end,
+	headerOnClick = function() SortView("CurrencyBfARichAzerite") end,
 	headerSort = DataStore.GetBfARichAzerite,
 	
 	-- Content
@@ -1782,22 +1793,33 @@ columns["CurrencyBfARichAzerite"] = {
 		end,
 }
 
-columns["CurrencyGetBfA7thLegion"] = {
+columns["CurrencyGetBfAWarEffort"] = {
 	-- Header
+	--DataStore:GetCharacterFaction(character)
 	headerWidth = 60,
-	headerLabel = "      " .. format(TEXTURE_FONT, "Interface\\Icons\\ui_alliance_7legionmedal", 18, 18),
+	headerLabel = " " .. format(TEXTURE_FONT, "Interface\\Icons\\inv_hordewareffort", 18, 18) .. " / " .. format(TEXTURE_FONT, "Interface\\Icons\\ui_alliance_7legionmedal", 18, 18),
 	headerOnEnter = function(frame, tooltip)
-			CurrencyHeader_OnEnter(frame, CURRENCY_ID_BFA_7TH_LEGION)
+			CurrencyHeaderMulti_OnEnter(frame, CURRENCY_ID_BFA_HONORBOUND, CURRENCY_ID_BFA_7TH_LEGION)
 		end,
-	headerOnClick = function() SortView("CurrencySOBF") end,
-	headerSort = DataStore.GetBfA7thLegion,
-	
+	headerOnClick = function() SortView("CurrencyGetBfAWarEffort") end,
+	headerSort = function()
+		return DataStore.GetBfAHonorbound + DataStore.GetBfA7thLegion
+		end,
+
 	-- Content
 	Width = 60,
 	JustifyH = "CENTER",
 	GetText = function(character)
-			local amount = DataStore:GetCurrencyTotals(character, CURRENCY_ID_BFA_7TH_LEGION)
+			local amount = 0;
 			local color = (amount == 0) and colors.grey or colors.white
+
+			if DataStore:GetCharacterFaction(character) == "Horde" then
+				amount = DataStore:GetCurrencyTotals(character, CURRENCY_ID_BFA_HONORBOUND)
+				color = colors.Horde
+			else
+				amount = DataStore:GetCurrencyTotals(character, CURRENCY_ID_BFA_7TH_LEGION)
+				color = colors.Alliance
+			end
 			
 			return format("%s%s", color, amount)
 		end,
@@ -1810,7 +1832,7 @@ columns["CurrencyGetBfATitanResiduum"] = {
 	headerOnEnter = function(frame, tooltip)
 			CurrencyHeader_OnEnter(frame, CURRENCY_ID_BFA_TITAN_RESIDUUM)
 		end,
-	headerOnClick = function() SortView("CurrencySOBF") end,
+	headerOnClick = function() SortView("CurrencyGetBfATitanResiduum") end,
 	headerSort = DataStore.GetBfATitanResiduum,
 	
 	-- Content
@@ -2012,7 +2034,7 @@ local modes = {
 	-- [MODE_SKILLS] = { "Name", "Level", "ProfCooking", "ProfFishing", "ProfArchaeology" },
 	[MODE_ACTIVITY] = { "Name", "Level", "Mails", "LastMailCheck", "Auctions", "Bids", "AHLastVisit", "MissionTableLastVisit" },
 	-- [MODE_CURRENCIES] = { "Name", "Level", "CurrencyGarrison", "CurrencyNethershard", "CurrencyLegionWarSupplies", "CurrencySOBF", "CurrencyOrderHall" },
-	[MODE_CURRENCIES] = { "Name", "Level", "CurrencyBfAWarResources", "CurrencyBfASOWF", "CurrencyBfADubloons", "CurrencyBfAWarSupplies", "CurrencyBfARichAzerite", "CurrencyGetBfA7thLegion", "CurrencyGetBfATitanResiduum" },
+	[MODE_CURRENCIES] = { "Name", "Level", "CurrencyBfAWarResources", "CurrencyBfASOWF", "CurrencyBfADubloons", "CurrencyBfAWarSupplies", "CurrencyBfARichAzerite", "CurrencyGetBfAWarEffort", "CurrencyGetBfATitanResiduum" },
 	[MODE_FOLLOWERS] = { "Name", "Level", "FollowersLV100", "FollowersEpic", "FollowersLV630", "FollowersLV660", "FollowersLV675", "FollowersItems" },
 }
 
