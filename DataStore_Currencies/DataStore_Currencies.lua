@@ -25,6 +25,8 @@ local CURRENCY_ID_BFA_SOWF = 1580				-- BfA: Seals of the Wartorn Fate
 local CURRENCY_ID_BFA_DUBLOONS = 1710			-- BfA: Seafarer's Dubloon
 local CURRENCY_ID_BFA_WAR_SUPPLIES = 1587		-- BfA: War Supplies
 local CURRENCY_ID_BFA_AZERITE = 1565			-- BfA: Rich Azerite Fragment
+local CURRENCY_ID_BFA_7TH_LEGION = 1717			-- BfA: 7th Legion Service Medal
+local CURRENCY_ID_BFA_TITAN_RESIDUUM = 1718		-- BfA: Titan Residuum
 
 local AddonDB_Defaults = {
 	global = {
@@ -120,6 +122,8 @@ local function ScanTotals()
 	ScanCurrencyTotals(CURRENCY_ID_BFA_DUBLOONS)
 	ScanCurrencyTotals(CURRENCY_ID_BFA_WAR_SUPPLIES)
 	ScanCurrencyTotals(CURRENCY_ID_BFA_AZERITE)
+	ScanCurrencyTotals(CURRENCY_ID_BFA_TITAN_RESIDUUM)
+	ScanCurrencyTotals(CURRENCY_ID_BFA_7TH_LEGION)
 end
 
 local function ScanCurrencies()
@@ -331,6 +335,14 @@ local function _GetBfARichAzerite(character)
 	return _GetCurrencyTotals(character, CURRENCY_ID_BFA_AZERITE)
 end
 
+local function _GetBfATitanResiduum(character)
+	return _GetCurrencyTotals(character, CURRENCY_ID_BFA_TITAN_RESIDUUM)
+end
+
+local function _GetBfA7thLegion(character)
+	return _GetCurrencyTotals(character, CURRENCY_ID_BFA_7TH_LEGION)
+end
+
 local PublicMethods = {
 	GetNumCurrencies = _GetNumCurrencies,
 	GetCurrencyInfo = _GetCurrencyInfo,
@@ -353,6 +365,8 @@ local PublicMethods = {
 	GetBfADubloons = _GetBfADubloons,
 	GetBfAWarSupplies = _GetBfAWarSupplies,
 	GetBfARichAzerite = _GetBfARichAzerite,
+	GetBfATitanResiduum = _GetBfATitanResiduum,
+	GetBfA7thLegion = _GetBfA7thLegion
 }
 
 function addon:OnInitialize()
@@ -380,6 +394,8 @@ function addon:OnInitialize()
 	DataStore:SetCharacterBasedMethod("GetBfADubloons")
 	DataStore:SetCharacterBasedMethod("GetBfAWarSupplies")
 	DataStore:SetCharacterBasedMethod("GetBfARichAzerite")
+	DataStore:SetCharacterBasedMethod("GetBfATitanResiduum")
+	DataStore:SetCharacterBasedMethod("GetBfA7thLegion")
 end
 
 function addon:OnEnable()
