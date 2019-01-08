@@ -235,16 +235,6 @@ local function CurrencyHeader_OnEnter(frame, currencyID)
 	tt:Show()
 end
 
-local function CurrencyHeaderMulti_OnEnter(frame, currencyOneID, currencyTwoID)
-	local tt = AltoTooltip
-	
-	tt:ClearLines()
-	tt:SetOwner(frame, "ANCHOR_BOTTOM")
-	tt:SetHyperlink(GetCurrencyLink(currencyOneID,0))
-	tt:SetHyperlink(GetCurrencyLink(currencyTwoID,0))
-	tt:Show()
-end
-
 local Characters = addon.Characters
 
 local function SortView(columnName)
@@ -1799,18 +1789,18 @@ columns["CurrencyGetBfAWarEffort"] = {
 	headerWidth = 60,
 	headerLabel = " " .. format(TEXTURE_FONT, "Interface\\Icons\\inv_hordewareffort", 18, 18) .. " / " .. format(TEXTURE_FONT, "Interface\\Icons\\ui_alliance_7legionmedal", 18, 18),
 	headerOnEnter = function(frame, tooltip)
-			CurrencyHeaderMulti_OnEnter(frame, CURRENCY_ID_BFA_HONORBOUND, CURRENCY_ID_BFA_7TH_LEGION)
+			-- TODO: Need to show both tooltips
+			CurrencyHeader_OnEnter(frame, CURRENCY_ID_BFA_HONORBOUND)
+			CurrencyHeader_OnEnter(frame, CURRENCY_ID_BFA_7TH_LEGION)
 		end,
 	headerOnClick = function() SortView("CurrencyGetBfAWarEffort") end,
-	headerSort = function()
-		return DataStore.GetBfAHonorbound + DataStore.GetBfA7thLegion
-		end,
+	headerSort = DataStore.GetBfAWarEffort,
 
 	-- Content
 	Width = 60,
 	JustifyH = "CENTER",
 	GetText = function(character)
-			local amount = 0;
+			local amount = 0
 			local color = (amount == 0) and colors.grey or colors.white
 
 			if DataStore:GetCharacterFaction(character) == "Horde" then

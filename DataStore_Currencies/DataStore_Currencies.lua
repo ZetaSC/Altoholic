@@ -345,6 +345,10 @@ local function _GetBfA7thLegion(character)
 	return _GetCurrencyTotals(character, CURRENCY_ID_BFA_7TH_LEGION)
 end
 
+local function _GetBfAWarEffort(character)
+	return _GetCurrencyTotals(character, CURRENCY_ID_BFA_HONORBOUND) + _GetCurrencyTotals(character, CURRENCY_ID_BFA_7TH_LEGION)
+end
+
 local function _GetBfATitanResiduum(character)
 	return _GetCurrencyTotals(character, CURRENCY_ID_BFA_TITAN_RESIDUUM)
 end
@@ -373,6 +377,7 @@ local PublicMethods = {
 	GetBfARichAzerite = _GetBfARichAzerite,
 	GetBfAHonorbound = _GetBfAHonorbound,
 	GetBfA7thLegion = _GetBfA7thLegion,
+	GetBfAWarEffort = _GetBfAWarEffort,
 	GetBfATitanResiduum = _GetBfATitanResiduum
 	
 }
@@ -404,6 +409,7 @@ function addon:OnInitialize()
 	DataStore:SetCharacterBasedMethod("GetBfARichAzerite")
 	DataStore:SetCharacterBasedMethod("GetBfAHonorbound")
 	DataStore:SetCharacterBasedMethod("GetBfA7thLegion")
+	DataStore:SetCharacterBasedMethod("GetBfAWarEffort")
 	DataStore:SetCharacterBasedMethod("GetBfATitanResiduum")
 end
 
